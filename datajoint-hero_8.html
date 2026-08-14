@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataJoint — Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  .dj-root {
+    --dj-bg: #fff;
+    --dj-ink: #0a0f1e;
+    --dj-muted: #5b6472;
+    --dj-blue: #3b82f6;
+    --dj-line: #e8eaee;
+    background: var(--dj-bg); width: 100%; color: var(--dj-ink);
+    font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; position: relative; overflow: hidden;
+  }
+  .dj-root * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .dj-stage {
+    aspect-ratio: 1440 / 921; width: 100%; max-width: 1440px;
+    margin: 0 auto; position: relative; container-type: inline-size;
+  }
+
+  /* ============ RINGS ============ */
+  .dj-ring {
+    border: 1px solid var(--dj-line); border-radius: 50%;
+    position: absolute; top: 19.27cqw; left: 50.03cqw; transform: translate(-50%,-50%);
+  }
+  .dj-ring.r1 { width: 61.81cqw; height: 61.81cqw; }
+  .dj-ring.r2 { width: 75.69cqw; height: 75.69cqw; }
+  .dj-ring.r3 { width: 89.38cqw; height: 89.38cqw; }
+
+  /* ============ ORBITING NODES ============ */
+  .dj-orbit { width: 0; height: 0; position: absolute; top: 19.27cqw; left: 50.03cqw; transform: rotate(var(--a)); }
+  .dj-orbit .dj-spin { animation: dj-spin var(--t, 90s) linear infinite var(--dir, normal); }
+  .dj-orbit .dj-arm { transform: translateX(var(--r)); }
+  .dj-orbit .dj-unspin { animation: dj-spin var(--t, 90s) linear infinite var(--rdir, reverse); }
+  @keyframes dj-spin { to { transform: rotate(360deg); } }
+
+  .dj-node {
+    width: 4.6cqw; height: 4.6cqw; min-width: 40px; min-height: 40px;
+    background: #fff; border: 1px solid var(--dj-line); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transform: translate(-50%,-50%) rotate(calc(var(--a) * -1));
+    box-shadow: 0 6px 18px -8px rgba(16,24,40,0.16);
+    animation: dj-bob 6s ease-in-out calc(var(--b, 0) * -1s) infinite;
+  }
+  @keyframes dj-bob { 0%,100% { margin-top: 0; } 50% { margin-top: -8px; } }
+  .dj-node svg { width: 44%; height: 44%; stroke: var(--dj-blue); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .dj-node.dj-dot { width: 0.62cqw; height: 0.62cqw; min-width: 7px; min-height: 7px; background: #C7D6F5; border: 0; box-shadow: none; }
+
+  /* ============ CONTENT ============ */
+  .dj-content { text-align: center; pointer-events: none; position: absolute; inset: 0; }
+  .dj-badge {
+    border: 1px solid var(--dj-line); color: var(--dj-ink); pointer-events: auto;
+    background: #fff; border-radius: 999px; align-items: center; gap: 7px;
+    margin-top: 10.28cqw; padding: 7px 14px; font-size: 13px; font-weight: 500; display: inline-flex;
+  }
+  .dj-badge svg { width: 14px; height: 14px; stroke: var(--dj-blue); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .dj-h1 {
+    letter-spacing: -0.025em; max-width: 52.78cqw; color: var(--dj-ink);
+    margin: 14px auto 0; font-size: max(28px, min(4.03cqw, 58px)); font-weight: 600; line-height: 1.16;
+  }
+  .dj-sub {
+    max-width: 38.9cqw; color: var(--dj-muted);
+    margin: 16px auto 0; font-size: max(14px, min(1.11cqw, 16px)); line-height: 1.6;
+  }
+  .dj-ctas { pointer-events: auto; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 20px; display: flex; }
+  .dj-btn {
+    cursor: pointer; border: 1px solid transparent; border-radius: 999px;
+    align-items: center; gap: 8px; padding: 11px 20px; font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: opacity .2s, box-shadow .15s; display: inline-flex;
+  }
+  .dj-btn:hover { opacity: 0.85; }
+  .dj-btn.dj-primary { background: var(--dj-blue); color: #fff; }
+  .dj-btn.dj-ghost { color: var(--dj-ink); border-color: var(--dj-line); background: #fff; }
+
+  /* entrance reveal */
+  .dj-reveal { opacity: 0; transform: translateY(14px); animation: dj-reveal .9s cubic-bezier(0.22,1,0.36,1) forwards; }
+  .dj-reveal.d1 { animation-delay: .05s; } .dj-reveal.d2 { animation-delay: .15s; }
+  .dj-reveal.d3 { animation-delay: .25s; } .dj-reveal.d4 { animation-delay: .35s; }
+  @keyframes dj-reveal { to { opacity: 1; transform: translateY(0); } }
+
+  /* ============ ACTIVITY DECK ============ */
+  .dj-deck {
+    pointer-events: auto; width: 30cqw; min-width: 280px; height: 20cqw; min-height: 270px;
+    position: absolute; top: 36.4cqw; left: 35cqw;
+    overflow: hidden;
+  }
+  .dj-deck-mask {
+    z-index: 10; pointer-events: none;
+    background:
+      linear-gradient(180deg, var(--dj-bg) 0%, rgba(255,255,255,0) 100%) top / 100% 26% no-repeat,
+      linear-gradient(0deg,  var(--dj-bg) 0%, rgba(255,255,255,0) 100%) bottom / 100% 26% no-repeat;
+    position: absolute; inset: -2px;
+  }
+  .dj-card {
+    will-change: transform, opacity, filter;
+    background: #fff; border: 1px solid #eef0f3; border-radius: 14px;
+    align-items: center; gap: 14px;
+    width: 90%; height: 5.14cqw; min-height: 60px;
+    padding: 0 16px; display: flex;
+    position: absolute; top: 50%; left: 50%;
+    margin: 0 0 0 -45%;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 12px 32px -12px rgba(16,24,40,0.12);
+    /* the smoothness: long, soft ease on every property that moves */
+    transition:
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity   0.9s cubic-bezier(0.33, 1, 0.68, 1),
+      filter    0.9s cubic-bezier(0.33, 1, 0.68, 1),
+      box-shadow 0.9s ease;
+    transform: translateY(calc(var(--y) - 50%)) scale(var(--s, 1));
+    opacity: var(--o, 1); filter: blur(var(--bl, 0px)); z-index: var(--z, 1);
+  }
+  .dj-card.dj-teleport { transition: none !important; }
+  .dj-card.is-active {
+    box-shadow: 0 2px 4px rgba(16,24,40,0.05), 0 24px 48px -16px rgba(16,24,40,0.22);
+    border-color: #E9ECF1;
+  }
+
+  .dj-icon-chip {
+    width: 2.9cqw; height: 2.9cqw; min-width: 34px; min-height: 34px;
+    border-radius: 11px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dj-icon-chip svg { width: 52%; height: 52%; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .dj-ic-green  { background: #E9F9EF; } .dj-ic-green  svg { stroke: #22C55E; }
+  .dj-ic-purple { background: #F1EDFD; } .dj-ic-purple svg { stroke: #8B5CF6; }
+  .dj-ic-blue   { background: #E7F0FE; } .dj-ic-blue   svg { stroke: #3B82F6; }
+  .dj-ic-amber  { background: #FEF4E6; } .dj-ic-amber  svg { stroke: #F59E0B; }
+  .dj-ic-indigo { background: #ECEDFD; } .dj-ic-indigo svg { stroke: #6366F1; }
+  .dj-ic-teal   { background: #E6F7F4; } .dj-ic-teal   svg { stroke: #14B8A6; }
+
+  .dj-card-body { flex: 1; min-width: 0; }
+  .dj-card-title { font-size: max(13px, min(1.05cqw, 15px)); font-weight: 600; color: var(--dj-ink); }
+  .dj-card-sub { font-size: max(11px, min(0.9cqw, 13px)); color: var(--dj-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ---- people avatars (was: colored circles) ---- */
+  .dj-avs { flex: 0 0 auto; display: flex; }
+  .dj-av {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid #fff; flex: 0 0 auto; overflow: hidden;
+    margin-left: -8px; position: relative;
+    box-shadow: 0 1px 3px rgba(16,24,40,0.12);
+  }
+  .dj-av:first-child { margin-left: 0; }
+  .dj-av img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .dj-av.more {
+    background: #EEF1F5; color: #5b6472;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition-duration: .001s !important; }
+  }
+  @media (max-width: 760px) {
+    .dj-stage { aspect-ratio: auto; min-height: 780px; }
+    .dj-h1 { max-width: 90%; font-size: 32px; }
+    .dj-sub { max-width: 86%; }
+    .dj-badge { margin-top: 90px; }
+    .dj-deck { left: 50%; transform: translateX(-50%); top: auto; bottom: 0; width: 92%; height: 320px; }
+    .dj-ring, .dj-orbit { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<section class="dj-root">
+  <div class="dj-stage">
+
+    <!-- rings -->
+    <div class="dj-ring r1"></div>
+    <div class="dj-ring r2"></div>
+    <div class="dj-ring r3"></div>
+
+    <!-- orbiting nodes -->
+    <div>
+      <!-- ring 1 (30.9cqw) -->
+      <div class="dj-orbit" style="--a:18.4deg; --r:30.9cqw; --t:95s; --b:0">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node">
+          <svg viewBox="0 0 24 24"><path d="M12 8.5c3.87 0 7-1.16 7-2.6S15.87 3.3 12 3.3 5 4.46 5 5.9 8.13 8.5 12 8.5Zm-7 3.4c0 1.4 3.13 2.6 7 2.6s7-1.2 7-2.6M5 5.9v6c0 1.4 3.13 2.6 7 2.6s7-1.2 7-2.6v-6M5 11.9v6c0 1.4 3.13 2.6 7 2.6s7-1.2 7-2.6v-6"/></svg>
+        </div></div></div></div>
+      </div>
+      <div class="dj-orbit" style="--a:170.4deg; --r:30.9cqw; --t:95s; --b:2">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node">
+          <svg viewBox="0 0 24 24"><path d="M10 3h4l-2 6h5l-8 12 2-8H6z"/></svg>
+        </div></div></div></div>
+      </div>
+      <div class="dj-orbit" style="--a:80deg; --r:30.9cqw; --t:95s">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node dj-dot"></div></div></div></div>
+      </div>
+
+      <!-- ring 2 (37.85cqw, reverse) -->
+      <div class="dj-orbit" style="--a:46.4deg; --r:37.85cqw; --t:115s; --dir:reverse; --rdir:normal; --b:1">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node">
+          <svg viewBox="0 0 24 24"><path d="M10 3h4v5l3 9a2 2 0 0 1-1.9 2.6H8.9A2 2 0 0 1 7 17l3-9zM8.5 13h7"/></svg>
+        </div></div></div></div>
+      </div>
+      <div class="dj-orbit" style="--a:-11.9deg; --r:37.85cqw; --t:115s; --dir:reverse; --rdir:normal; --b:3">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node">
+          <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        </div></div></div></div>
+      </div>
+      <div class="dj-orbit" style="--a:192deg; --r:37.85cqw; --t:115s; --dir:reverse; --rdir:normal; --b:2">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="12" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8.2 7.1l7.5 3.8M8.2 16.9l7.5-3.8"/></svg>
+        </div></div></div></div>
+      </div>
+      <div class="dj-orbit" style="--a:132.3deg; --r:37.85cqw; --t:115s; --dir:reverse; --rdir:normal; --b:4">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </div></div></div></div>
+      </div>
+      <div class="dj-orbit" style="--a:250deg; --r:37.85cqw; --t:115s; --dir:reverse; --rdir:normal">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node dj-dot"></div></div></div></div>
+      </div>
+
+      <!-- ring 3 (44.69cqw) -->
+      <div class="dj-orbit" style="--a:18.6deg; --r:44.69cqw; --t:135s; --b:1">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node">
+          <svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+        </div></div></div></div>
+      </div>
+      <div class="dj-orbit" style="--a:151deg; --r:44.69cqw; --t:135s; --b:3">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node">
+          <svg viewBox="0 0 24 24"><path d="M17.5 18H7a4 4 0 1 1 .6-7.95A5.5 5.5 0 0 1 18 9.6a4.2 4.2 0 0 1-.5 8.4z"/></svg>
+        </div></div></div></div>
+      </div>
+      <div class="dj-orbit" style="--a:330deg; --r:44.69cqw; --t:135s">
+        <div class="dj-spin"><div class="dj-arm"><div class="dj-unspin"><div class="dj-node dj-dot"></div></div></div></div>
+      </div>
+    </div>
+
+    <!-- content -->
+    <div class="dj-content">
+      <div class="dj-badge dj-reveal d1">
+        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.9-5.2-2.7-5.2 2.7 1-5.9L3.5 9.2l5.9-.9z"/></svg>
+        Scientific Data Platform
+      </div>
+      <h1 class="dj-h1 dj-reveal d2">Turn experiments into reproducible intelligence</h1>
+      <p class="dj-sub dj-reveal d3">Codify experiments, pipelines, and results in one governed foundation for trusted science, reusable assets, and AI-ready research workflows.</p>
+      <div class="dj-ctas dj-reveal d4">
+        <a href="#" class="dj-btn dj-primary">See the platform <span aria-hidden="true">&rarr;</span></a>
+        <a href="#" class="dj-btn dj-ghost">Explore workflows</a>
+      </div>
+    </div>
+
+    <!-- activity deck -->
+    <div class="dj-deck" id="djDeck">
+
+      <div class="dj-card" data-idx="0">
+        <div class="dj-icon-chip dj-ic-green">
+          <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <div class="dj-card-body">
+          <div class="dj-card-title">Workflow validated</div>
+          <div class="dj-card-sub">CRISPR Screen &ndash; v3.2.1 &middot; 2m ago</div>
+        </div>
+        <div class="dj-avs">
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Team member" loading="lazy"></div>
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Team member" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="dj-card" data-idx="1">
+        <div class="dj-icon-chip dj-ic-purple">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="12" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8.2 7.1l7.5 3.8M8.2 16.9l7.5-3.8"/></svg>
+        </div>
+        <div class="dj-card-body">
+          <div class="dj-card-title">Inputs linked</div>
+          <div class="dj-card-sub">12 inputs connected &middot; 9m ago</div>
+        </div>
+        <div class="dj-avs">
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Team member" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="dj-card" data-idx="2">
+        <div class="dj-icon-chip dj-ic-blue">
+          <svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v6c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M5 12v6c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6v-6"/></svg>
+        </div>
+        <div class="dj-card-body">
+          <div class="dj-card-title">Dataset published</div>
+          <div class="dj-card-sub">Perturb-seq Results &middot; 5m ago</div>
+        </div>
+        <div class="dj-avs">
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Team member" loading="lazy"></div>
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/women/21.jpg" alt="Team member" loading="lazy"></div>
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Team member" loading="lazy"></div>
+          <div class="dj-av more">+1</div>
+        </div>
+      </div>
+
+      <div class="dj-card" data-idx="3">
+        <div class="dj-icon-chip dj-ic-amber">
+          <svg viewBox="0 0 24 24"><path d="M10 3h4l-2 6h5l-8 12 2-8H6z"/></svg>
+        </div>
+        <div class="dj-card-body">
+          <div class="dj-card-title">Pipeline completed</div>
+          <div class="dj-card-sub">RNA-seq Batch 12 &middot; 21m ago</div>
+        </div>
+        <div class="dj-avs">
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Team member" loading="lazy"></div>
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Team member" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="dj-card" data-idx="4">
+        <div class="dj-icon-chip dj-ic-teal">
+          <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        </div>
+        <div class="dj-card-body">
+          <div class="dj-card-title">QC report generated</div>
+          <div class="dj-card-sub">Imaging Run 48 &middot; 33m ago</div>
+        </div>
+        <div class="dj-avs">
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/men/11.jpg" alt="Team member" loading="lazy"></div>
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/women/57.jpg" alt="Team member" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="dj-card" data-idx="5">
+        <div class="dj-icon-chip dj-ic-indigo">
+          <svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9 2.5v3M15 2.5v3M9 18.5v3M15 18.5v3M2.5 9h3M2.5 15h3M18.5 9h3M18.5 15h3"/></svg>
+        </div>
+        <div class="dj-card-body">
+          <div class="dj-card-title">Model trained</div>
+          <div class="dj-card-sub">Perturbation classifier v2 &middot; 14m ago</div>
+        </div>
+        <div class="dj-avs">
+          <div class="dj-av"><img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Team member" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="dj-deck-mask"></div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(() => {
+  /* ================= seamless activity carousel =================
+     Cards ride an endless vertical belt. Every tick each card moves
+     up one slot with a long soft ease; the card that exits the top
+     fades out, is silently teleported below the bottom (transition
+     disabled for one frame), then eases back in. No visible jump. */
+
+  const deck = document.getElementById('djDeck');
+  const cards = [...deck.querySelectorAll('.dj-card')];
+  const N = cards.length;
+
+  // slot styling: distance from center -> position/scale/opacity/blur
+  const SLOT = (d) => {
+    // exactly one card height + a fixed 10px gap per slot -> uniform tight stack
+    const y = `calc(${d * 100}% + ${d * 6}px)`;
+    if (d === 0) return { y, s: 1.03,  o: 1,    bl: 0,   z: 6, active: true  };
+    const a = Math.abs(d);
+    if (a === 1) return { y, s: 0.985, o: 0.85, bl: 0,   z: 4, active: false };
+    if (a === 2) return { y, s: 0.96,  o: 0.7,  bl: 0,   z: 2, active: false };
+    return       { y, s: 0.92,  o: 0,    bl: 0,   z: 1, active: false };
+  };
+
+  // initial slots: center the first card, others below
+  // offsets relative to center, spanning -2 .. N-3
+  let offset = 0; // which card index is currently centered
+
+  const apply = (card, d, teleport = false) => {
+    const conf = SLOT(d);
+    if (teleport) {
+      card.classList.add('dj-teleport');
+      card.getBoundingClientRect(); // flush
+    }
+    card.style.setProperty('--y', conf.y);
+    card.style.setProperty('--s', conf.s);
+    card.style.setProperty('--o', conf.o);
+    card.style.setProperty('--bl', conf.bl + 'px');
+    card.style.setProperty('--z', conf.z);
+    card.classList.toggle('is-active', conf.active);
+    if (teleport) {
+      requestAnimationFrame(() => requestAnimationFrame(() => card.classList.remove('dj-teleport')));
+    }
+  };
+
+  // signed shortest distance from center for a card index given offset
+  const dist = (idx) => {
+    let d = (idx - offset) % N;
+    if (d > N / 2) d -= N;
+    if (d < -N / 2) d += N;
+    return d;
+  };
+
+  // first paint (no transitions)
+  cards.forEach((c, i) => apply(c, dist(i), true));
+
+  const tick = () => {
+    offset = (offset + 1) % N;
+    cards.forEach((c, i) => {
+      const d = dist(i);
+      // the card that wrapped from top (-3) to bottom (+3) teleports invisibly
+      const wrapped = d === Math.floor(N / 2);
+      apply(c, d, wrapped);
+    });
+  };
+
+  let timer = setInterval(tick, 1900);
+  deck.addEventListener('mouseenter', () => clearInterval(timer));
+  deck.addEventListener('mouseleave', () => { timer = setInterval(tick, 1900); });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) clearInterval(timer);
+})();
+</script>
+
+</body>
+</html>
