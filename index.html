@@ -75,7 +75,7 @@ main{margin-left:var(--nav-w);position:relative;z-index:1}
 
 /* ---------- hero ---------- */
 .hero{
-  position:relative;min-height:100svh;
+  position:relative;min-height:100vh;min-height:100svh;
   display:flex;align-items:center;
   padding:132px 0 var(--barh,116px);
   overflow:hidden;
@@ -415,7 +415,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;font-size:11.5px;letter-s
     position:sticky;top:0;left:auto;bottom:auto;width:auto;
     flex-direction:row;align-items:center;justify-content:space-between;
     padding:14px 32px;border-bottom:1px solid var(--line);
-    background:rgba(8,8,10,.94);backdrop-filter:blur(14px);
+    background:rgba(8,8,10,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
   }
   .snav,.aside-foot{display:none}
   main{margin-left:0}
@@ -495,10 +495,15 @@ footer{border-top:1px solid var(--line);padding:32px 0;font-size:11.5px;letter-s
 }
 
 @media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important}
-  h1 .ch{transform:none;opacity:1}
-  .rv{opacity:1;transform:none}
+  /* stop decorative motion, but never leave content hidden */
+  .mq-t,.scroller i::after,.pdot,.glow{animation:none!important}
+  .htl .ch,h1 .ch{transform:none!important;opacity:1!important;animation:none!important}
+  .rv{opacity:1!important;transform:none!important;transition:none!important}
+  .htl-2 .base{-webkit-text-stroke:1.4px var(--blue-lit)}
 }
+
+/* safety: if the split script never runs, the headline must still be readable */
+.no-js .htl .ch{transform:none;opacity:1}
 </style>
 </head>
 <body>
@@ -909,6 +914,20 @@ const st=document.createElement('style');
 st.textContent='@keyframes chUp{to{transform:translateY(0);opacity:1}}';
 document.head.appendChild(st);
 
+// if reduced-motion is on (or animations never fire), show the words outright
+(function(){
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const chars = document.querySelectorAll('.htl .ch');
+  const show = () => chars.forEach(c=>{
+    c.style.animation='none'; c.style.transform='none'; c.style.opacity='1';
+  });
+  if(reduced) show(); else setTimeout(()=>{
+    chars.forEach(c=>{
+      if(getComputedStyle(c).opacity === '0'){ show(); }
+    });
+  }, 1800);
+})();
+
 /* ---- reveal on scroll ---- */
 const io = new IntersectionObserver(es=>{
   es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
@@ -1069,9 +1088,14 @@ document.querySelectorAll('.cap').forEach(c=>{
   hero.addEventListener('touchmove', point, {passive:true});
   hero.addEventListener('touchend', release);
 
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){
-    idle=false; seed(hw*.5,hh*.45); pr[0]=R_IMG; write();
-  } else { seed(hw*.4,hh*.42); requestAnimationFrame(frame); }
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(REDUCED){
+    idle=false;                      // no unprompted sweep...
+    seed(hw*.4,hh*.42);
+    requestAnimationFrame(frame);    // ...but tap and hover still respond
+  } else {
+    seed(hw*.4,hh*.42); requestAnimationFrame(frame);
+  }
 })();
 
 /* ---- scroll progress + active nav ---- */
