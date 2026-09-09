@@ -16,7 +16,7 @@
   --rec:1440/684; /* the native ratio of every screen recording on this page */
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-anchor:none}
 body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 ::selection{background:var(--blue);color:#fff}
@@ -179,7 +179,7 @@ p.body b{color:var(--ink);font-weight:500}
 
 /* ---------- live embed ---------- */
 .live{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);
-  background:#08080B;aspect-ratio:1440/900}
+  background:#08080B;aspect-ratio:1440/830;overflow-anchor:none;contain:layout paint}
 .live iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;z-index:2;
   transform-origin:top left;transform:scale(var(--s,.5))}
 .live-fallback{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;
@@ -207,8 +207,8 @@ p.body b{color:var(--ink);font-weight:500}
 
 
 /* ---------- build blocks ---------- */
-.blk{border-top:1px solid var(--line);padding:100px 0}
-.blk-head{display:grid;grid-template-columns:110px 1fr;gap:34px;align-items:start;margin-bottom:44px}
+.blk{border-top:1px solid var(--line);padding:84px 0}
+.blk-head{display:grid;grid-template-columns:110px 1fr;gap:34px;align-items:start;margin-bottom:36px}
 .blk-n{font-family:'Archivo',sans-serif;font-weight:800;font-size:56px;letter-spacing:-.05em;
   line-height:.9;color:var(--line);transition:color .5s}
 .blk:hover .blk-n{color:var(--blue-lit)}
@@ -216,7 +216,7 @@ p.body b{color:var(--ink);font-weight:500}
   letter-spacing:-.03em;line-height:1.08;margin-bottom:12px}
 .blk-line{font-size:16px;color:#A9A9B4;line-height:1.7;max-width:60ch}
 .blk .tags{margin-top:20px}
-.blk .note{margin-top:30px;max-width:none}
+.blk .note{margin-top:26px;max-width:none}
 @media (max-width:860px){
   .blk{padding:70px 0}
   .blk-head{grid-template-columns:1fr;gap:14px;margin-bottom:30px}
@@ -246,7 +246,7 @@ p.body b{color:var(--ink);font-weight:500}
 
 /* ---------- embedded live sections ---------- */
 .emb{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);
-  background:#1B1B22;aspect-ratio:1440/900}
+  background:#1B1B22;aspect-ratio:1440/720;overflow-anchor:none;contain:layout paint}
 .emb iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;z-index:2;
   transform-origin:top left;transform:scale(var(--s,.5));background:#fff}
 .emb.ready{border-color:#2C2C38}
@@ -321,9 +321,9 @@ p.body b{color:var(--ink);font-weight:500}
     <div class="crumb rv">Case Study &middot; 02 &middot; Product landing page</div>
     <h1 class="disp ctitle rv" data-d="1">A landing page<br>built to <em>ship</em></h1>
     <p class="clede rv" data-d="2">A Chrome extension that reads a profile, verifies the work email
-    and drafts the opener, leaving the send to the user. I did the whole page:
-    <b>positioning, copy, interface, motion and the front-end code</b>. It was handed over as one
-    production HTML file, ready to deploy without a rebuild.</p>
+    and drafts the opener, leaving the send to the person. I owned the page end to end:
+    <b>positioning, copy, interface, motion and the front-end build</b>, delivered as a single
+    production file that goes live without a rebuild.</p>
 
     <div class="meta rv" data-d="3">
       <div class="mcell">
@@ -369,7 +369,7 @@ p.body b{color:var(--ink);font-weight:500}
           </div>
           <span class="live-tag"><i></i>Live &middot; interactive</span>
           <iframe id="frame" title="Landing page hero, interactive preview"
-                  scrolling="no" tabindex="-1"></iframe>
+                  scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
         </div>
       </div>
       <figcaption class="cap"><b>The hero, running.</b> Not a recording. This is the real section
@@ -394,18 +394,20 @@ p.body b{color:var(--ink);font-weight:500}
         <h2 class="disp">Selling an <em>approval</em> product</h2>
       </div>
       <div class="rv" data-d="1">
-        <p class="body">Most automation tools sell speed, and buyers hear risk. The value here runs the other way: the machine does the reading, verifying and drafting, and the
-        human keeps the last click. That distinction had to be visible in the first screen, not
-        explained in paragraph four.</p>
-        <p class="body">So the hero shows the actual object being approved rather than an abstract
-        illustration. The page then repeats that structure section by section: show the artifact,
-        then state the guardrail.</p>
+        <p class="body">Most tools in this category sell speed, and the market has learned to hear that as risk.
+        The value here runs the other way: the machine does the reading, verifying and drafting,
+        and the person keeps the last click. That distinction had to land in the first screen,
+        because by paragraph four the reader has already decided what kind of product this is.</p>
+        <p class="body">So the hero shows the artifact being approved rather than an illustration of the idea,
+        and every section below repeats that order: show the thing, then name the constraint that
+        makes it safe. Consistency of argument does more for trust than any single section can.</p>
       </div>
     </div>
     <div class="note rv" data-d="2">
       <div class="k">Positioning line</div>
-      <p>Autopilot on the work, manual on the judgment. It separates the product from every
-      send-it-for-you tool in one sentence, and it dictated the order of the whole page.</p>
+      <p>Autopilot on the work, manual on the judgment. One sentence that separates the product
+      from every send-it-for-you tool on the market, and the line the rest of the page is
+      sequenced around.</p>
     </div>
   </div>
 </section>
@@ -415,9 +417,9 @@ p.body b{color:var(--ink);font-weight:500}
   <div class="wrap">
     <div class="eyebrow rv">The build</div>
     <h2 class="disp rv" data-d="1">Section by <em>section</em></h2>
-    <p class="body narrow rv" data-d="2">Every section below is the delivered build, embedded live
-    rather than screenshotted. They load as you reach them and each one is interactive, so what
-    you are judging is the real thing at the real width.</p>
+    <p class="body narrow rv" data-d="2">Each section below is the delivered build itself, embedded
+    live rather than captured as an image. They load as you reach them and stay interactive, so
+    what you are judging is the real page at its real width, not a flattering crop of it.</p>
   </div>
 </section>
 
@@ -428,22 +430,22 @@ p.body b{color:var(--ink);font-weight:500}
       <div class="blk-n">01</div>
       <div>
         <h3 class="blk-t">Capture</h3>
-        <p class="blk-line">The panel fills in front of you: company, work email, intent and a readiness score.</p>
+        <p class="blk-line">The first proof: what it found on this person, and where it came from.</p>
         <div class="tags"><span class="tag">Product UI</span><span class="tag">Micro-interaction</span></div>
       </div>
     </div>
     <figure class="figure rv" data-d="1">
-      <div class="emb" data-src="product-preview.html#capture" data-anchor="capture">
+      <div class="emb" data-src="product-preview.html" data-anchor="capture">
         <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Capture</b><span>Loading the live section&hellip;</span></div>
         <span class="emb-tag"><i></i>Live section</span>
-        <iframe title="Capture section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+        <iframe title="Capture section, live from the delivered build" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
       </div>
       <div class="emb-alt">The live <b>Capture</b> section runs at desktop width. Open the full page to see it.</div>
-      <figcaption class="cap"><b>Capture.</b> The fields resolve one after another rather than all at once, because this is the moment the product asks to be trusted with research. Something that appears instantly reads as a mockup, while something that arrives in sequence reads as work being done on your behalf.</figcaption>
+      <figcaption class="cap"><b>Capture.</b> This is the first thing the product does, so it is the first thing the page shows. The fields resolve in sequence rather than arriving complete, because the moment being sold here is research being done on your behalf. A block that appears fully formed reads as a mockup; one that fills in order reads as work.</figcaption>
     </figure>
     <div class="note rv" data-d="2">
       <div class="k">Decision</div>
-      <p>Empty states are labelled <b>not found</b> instead of quietly disappearing. Showing where the search came up short is what makes the fields that did fill believable, and it costs nothing but honesty.</p>
+      <p>Fields that come back empty are labelled <b>not found</b> rather than hidden. Concealing the gaps would make the whole panel feel staged, and for a product asking to be trusted with someone's inbox, a visible limit does more for credibility than a full grid.</p>
     </div>
   </div>
 </section>
@@ -454,22 +456,22 @@ p.body b{color:var(--ink);font-weight:500}
       <div class="blk-n">02</div>
       <div>
         <h3 class="blk-t">Approve</h3>
-        <p class="blk-line">The readiness score and claim check sit on the draft itself, where the risk actually is.</p>
+        <p class="blk-line">Where the judgment stays with the person: score, claim check, then send.</p>
         <div class="tags"><span class="tag">Core section</span><span class="tag">Trust</span></div>
       </div>
     </div>
     <figure class="figure rv" data-d="1">
-      <div class="emb" data-src="product-preview.html#approve" data-anchor="approve">
+      <div class="emb" data-src="product-preview.html" data-anchor="approve">
         <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Approve</b><span>Loading the live section&hellip;</span></div>
         <span class="emb-tag"><i></i>Live section</span>
-        <iframe title="Approve section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+        <iframe title="Approve section, live from the delivered build" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
       </div>
       <div class="emb-alt">The live <b>Approve</b> section runs at desktop width. Open the full page to see it.</div>
-      <figcaption class="cap"><b>Approve.</b> This is the section the whole argument rests on, so it holds the most vertical space and the slowest motion on the page. Everything above it exists to bring the reader here in the right frame of mind.</figcaption>
+      <figcaption class="cap"><b>Approve.</b> The argument the page is making lives here, so this section carries the most vertical space and the slowest motion on the page. Everything above it is preparation for this moment, and everything below it is reassurance after it.</figcaption>
     </figure>
     <div class="note rv" data-d="2">
       <div class="k">Decision</div>
-      <p>The score and the claim check are attached to the message rather than shown in a separate dashboard, because a decision has to happen at the point of risk. Move it elsewhere and the guardrail becomes decoration.</p>
+      <p>The readiness score and claim check sit on the draft itself rather than in a separate panel. A safeguard shown away from the point of risk is a safeguard nobody uses, and moving it here was the difference between a feature and an actual control.</p>
     </div>
   </div>
 </section>
@@ -480,22 +482,22 @@ p.body b{color:var(--ink);font-weight:500}
       <div class="blk-n">03</div>
       <div>
         <h3 class="blk-t">How it works</h3>
-        <p class="blk-line">Read, verify, draft. The send stays with the person, deliberately.</p>
+        <p class="blk-line">Read, verify, draft. The send is held back on purpose.</p>
         <div class="tags"><span class="tag">Explainer</span><span class="tag">Hierarchy</span></div>
       </div>
     </div>
     <figure class="figure rv" data-d="1">
-      <div class="emb" data-src="product-preview.html#how" data-anchor="how">
+      <div class="emb" data-src="product-preview.html" data-anchor="how">
         <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>How it works</b><span>Loading the live section&hellip;</span></div>
         <span class="emb-tag"><i></i>Live section</span>
-        <iframe title="How it works section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+        <iframe title="How it works section, live from the delivered build" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
       </div>
       <div class="emb-alt">The live <b>How it works</b> section runs at desktop width. Open the full page to see it.</div>
-      <figcaption class="cap"><b>Three steps.</b> Three is about the ceiling for a landing page. A fourth turns a diagram into documentation, and the reader starts skimming, which costs more attention than the extra detail could ever return.</figcaption>
+      <figcaption class="cap"><b>Three steps.</b> Three is roughly the limit a landing page can teach before attention starts to drain. A fourth step would have been accurate and would have cost more than it returned, so the detail moved further down the page where the reader has already committed.</figcaption>
     </figure>
     <div class="note rv" data-d="2">
       <div class="k">Decision</div>
-      <p>The held-back send is drawn as a deliberate stop rather than left out. Here the absence of a step is the feature, so it needed to be visible instead of implied.</p>
+      <p>The held-back send is drawn as a deliberate stop rather than left out of the sequence. When the absence of a step is the product's main claim, it has to be visible, or the reader has to take it on faith.</p>
     </div>
   </div>
 </section>
@@ -506,22 +508,22 @@ p.body b{color:var(--ink);font-weight:500}
       <div class="blk-n">04</div>
       <div>
         <h3 class="blk-t">The package</h3>
-        <p class="blk-line">Dossier, message and cadence arrive together as one reviewable object.</p>
+        <p class="blk-line">Dossier, message and cadence, generated and reviewed as one thing.</p>
         <div class="tags"><span class="tag">Product proof</span><span class="tag">Pricing support</span></div>
       </div>
     </div>
     <figure class="figure rv" data-d="1">
-      <div class="emb" data-src="product-preview.html#package" data-anchor="package">
+      <div class="emb" data-src="product-preview.html" data-anchor="package">
         <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>The package</b><span>Loading the live section&hellip;</span></div>
         <span class="emb-tag"><i></i>Live section</span>
-        <iframe title="The package section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+        <iframe title="The package section, live from the delivered build" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
       </div>
       <div class="emb-alt">The live <b>The package</b> section runs at desktop width. Open the full page to see it.</div>
-      <figcaption class="cap"><b>One object.</b> Anyone weighing a per-capture price needs to know what a capture actually contains, so the three outputs are shown as a single artifact rather than as separate features.</figcaption>
+      <figcaption class="cap"><b>One object.</b> Anyone weighing a price per capture needs to know what a capture contains before the number means anything. Showing the three outputs as a single artifact answers that question at the point it forms, rather than leaving it for the pricing table to carry.</figcaption>
     </figure>
     <div class="note rv" data-d="2">
       <div class="k">Decision</div>
-      <p>Answering that question here lets the pricing section further down stay short. It is billed as one thing and reviewed as one thing, so it is shown as one thing.</p>
+      <p>It is generated together, reviewed together and billed together, so presenting it as three separate features would have described the build rather than the experience. This also let the pricing section stay short, which is where short belongs.</p>
     </div>
   </div>
 </section>
@@ -532,22 +534,22 @@ p.body b{color:var(--ink);font-weight:500}
       <div class="blk-n">05</div>
       <div>
         <h3 class="blk-t">Features</h3>
-        <p class="blk-line">Guardrails and budget caps, written as capabilities rather than fine print.</p>
+        <p class="blk-line">Constraints written as capabilities, because that is what buyers are shopping for.</p>
         <div class="tags"><span class="tag">Grid</span><span class="tag">Positioning</span></div>
       </div>
     </div>
     <figure class="figure rv" data-d="1">
-      <div class="emb" data-src="product-preview.html#features" data-anchor="features">
+      <div class="emb" data-src="product-preview.html" data-anchor="features">
         <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Features</b><span>Loading the live section&hellip;</span></div>
         <span class="emb-tag"><i></i>Live section</span>
-        <iframe title="Features section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+        <iframe title="Features section, live from the delivered build" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
       </div>
       <div class="emb-alt">The live <b>Features</b> section runs at desktop width. Open the full page to see it.</div>
-      <figcaption class="cap"><b>Guardrails as features.</b> Limits usually get buried in terms of service. For an agency running a dozen client workspaces, separated approved claims and a hard budget cap are the reasons to buy, so they lead instead.</figcaption>
+      <figcaption class="cap"><b>Guardrails as features.</b> Limits are usually relegated to terms of service. For an agency running a dozen client workspaces, separated claim libraries and a hard budget ceiling are the reason to sign, so they lead the grid instead of trailing it.</figcaption>
     </figure>
     <div class="note rv" data-d="2">
       <div class="k">Decision</div>
-      <p>Each card names the constraint before the capability. It is the same argument the hero makes, repeated at feature scale so the page stays consistent with itself.</p>
+      <p>Each card names the constraint before the capability it enables. It is the same argument the hero makes, repeated at feature scale, which is how a page stays consistent with itself rather than merely well designed in parts.</p>
     </div>
   </div>
 </section>
@@ -558,22 +560,22 @@ p.body b{color:var(--ink);font-weight:500}
       <div class="blk-n">06</div>
       <div>
         <h3 class="blk-t">Pricing and FAQ</h3>
-        <p class="blk-line">Free on the first campaign, with the objections handled directly underneath.</p>
+        <p class="blk-line">Free on the first campaign, with the objections answered directly underneath.</p>
         <div class="tags"><span class="tag">Conversion</span><span class="tag">Close</span></div>
       </div>
     </div>
     <figure class="figure rv" data-d="1">
-      <div class="emb" data-src="product-preview.html#pricing" data-anchor="pricing">
+      <div class="emb" data-src="product-preview.html" data-anchor="pricing">
         <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Pricing and FAQ</b><span>Loading the live section&hellip;</span></div>
         <span class="emb-tag"><i></i>Live section</span>
-        <iframe title="Pricing and FAQ section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+        <iframe title="Pricing and FAQ section, live from the delivered build" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
       </div>
       <div class="emb-alt">The live <b>Pricing and FAQ</b> section runs at desktop width. Open the full page to see it.</div>
-      <figcaption class="cap"><b>The close.</b> Starting free removes the cost of deciding. For a tool asking for browser access, lowering the threshold to try it matters considerably more than the shape of the tiers above it.</figcaption>
+      <figcaption class="cap"><b>The close.</b> Starting free removes the cost of the decision rather than the cost of the product. For a tool that asks for browser access, lowering the threshold to try it matters considerably more than the shape of the tiers above it.</figcaption>
     </figure>
     <div class="note rv" data-d="2">
       <div class="k">Decision</div>
-      <p>The FAQ sits immediately below pricing rather than at the bottom of the page, so the questions that stall a click get answered while the price is still on screen.</p>
+      <p>The FAQ sits immediately below the price rather than at the foot of the page. Objections are cheapest to answer while the number is still on screen, and moving them here measurably shortens the distance between interest and a click.</p>
     </div>
   </div>
 </section>
@@ -587,9 +589,10 @@ p.body b{color:var(--ink);font-weight:500}
     to install. Semantic sections with stable ids, scoped class names, and all motion behind
     <code>prefers-reduced-motion</code>. Every animation is canvas or CSS, driven by an
     IntersectionObserver so nothing off screen is running.</p>
-    <p class="body narrow rv" data-d="3">The practical effect is that there is no handoff gap.
-    No redline pass, no second round on spacing, no developer rebuilding a static frame. What was
-    designed is what deploys.</p>
+    <p class="body narrow rv" data-d="3">The practical effect is that there is no handoff gap to
+    manage. No redline pass, no second round on spacing, no engineer rebuilding a static frame in
+    a different stack. What was designed is what deploys, which removes the stage where most of
+    the intent usually leaks out.</p>
     <div class="stats rv" data-d="4">
       <div class="stat"><div class="n">10</div><div class="r">Sections, one file</div></div>
       <div class="stat"><div class="n">0</div><div class="r">Dependencies</div></div>
@@ -649,14 +652,21 @@ document.querySelectorAll('video').forEach(v=>vio.observe(v));
     if (w) box.style.setProperty('--s', (w / VW).toFixed(5));
   };
 
+  /* position the frame on its section without touching the parent scroll.
+     a #fragment in the src would make the browser jump this page instead. */
   const park = (box, frame) => {
     const id = box.dataset.anchor;
     if (!id) return;
     try {
-      const doc = frame.contentDocument;
+      const win = frame.contentWindow, doc = frame.contentDocument;
       const el = doc && doc.getElementById(id);
-      if (el) frame.contentWindow.scrollTo(0, el.getBoundingClientRect().top + frame.contentWindow.scrollY);
-    } catch (e) {}
+      if (el) win.scrollTo({ top: el.getBoundingClientRect().top + win.scrollY, behavior: 'auto' });
+    } catch (e) {
+      if (!box.dataset.hashed) {          // file:// only: no script access, so use the fragment
+        box.dataset.hashed = '1';
+        frame.src = box.dataset.src + '#' + id;
+      }
+    }
   };
 
   const fail = box => {
