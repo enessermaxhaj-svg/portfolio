@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Landing Page | Enes Sermaxhaj</title>
+<meta name="description" content="Design and front-end build of a product landing page for a Chrome extension: interactive hero, section system and production HTML handed over ready to deploy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080A; --surf:#0F0F13; --surf2:#16161C;
+  --ink:#F6F6F8; --muted:#84848F; --dim:#55555E; --line:#1E1E26;
+  --blue:#0118DD; --blue-lit:#2A40FE; --blue-glow:rgba(1,24,221,.65);
+  --rec:1440/684; /* the native ratio of every screen recording on this page */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--blue);color:#fff}
+img,video{max-width:100%;display:block}
+
+.wrap{max-width:1160px;margin:0 auto;padding:0 48px}
+.narrow{max-width:720px}
+.disp{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-.045em;line-height:.9;text-transform:uppercase}
+
+#prog{position:fixed;top:0;left:0;height:2px;width:0;background:var(--blue-lit);z-index:200;box-shadow:0 0 14px var(--blue-glow)}
+.glow{position:fixed;width:820px;height:820px;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(1,24,221,.16) 0%,transparent 65%);filter:blur(40px);top:-320px;right:-240px}
+
+/* ---------- top bar ---------- */
+.bar{position:fixed;top:0;left:0;right:0;z-index:150;background:rgba(8,8,10,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bar-in{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px 48px;max-width:1160px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:14px}
+.brand svg{width:24px;height:auto;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.brand:hover svg{transform:rotate(-8deg) scale(1.08)}
+.brand span{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.back{display:inline-flex;align-items:center;gap:10px;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);transition:color .4s,gap .5s cubic-bezier(.2,.8,.2,1)}
+.back svg{width:13px;height:13px}
+.back:hover{color:var(--ink);gap:15px}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.2,.75,.2,1),transform 1s cubic-bezier(.2,.75,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv[data-d="1"]{transition-delay:.1s}.rv[data-d="2"]{transition-delay:.2s}
+.rv[data-d="3"]{transition-delay:.3s}.rv[data-d="4"]{transition-delay:.4s}
+
+/* ---------- header ---------- */
+.chead{padding:180px 0 0;position:relative;z-index:1}
+.crumb{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:12px;margin-bottom:30px}
+.crumb::before{content:"";width:24px;height:1px;background:var(--blue-lit)}
+.ctitle{font-size:clamp(40px,7.4vw,104px);margin-bottom:34px}
+.ctitle em{font-style:normal;color:transparent;-webkit-text-stroke:1px var(--blue-lit)}
+.clede{font-size:clamp(16px,1.6vw,20px);color:#B9B9C2;max-width:660px;line-height:1.6}
+.clede b{color:var(--ink);font-weight:500}
+
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:60px}
+.mcell{background:var(--bg);padding:26px 24px}
+.mcell .k{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.mcell .v{font-size:15px;color:var(--ink);line-height:1.5}
+.mcell .v small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+.mcell a.v:hover{color:var(--blue-lit)}
+
+/* ---------- media ---------- */
+.figure{margin:0}
+.frame{border-radius:14px;overflow:hidden;background:#000;border:1px solid var(--line);position:relative;transition:border-color .5s}
+.frame:hover{border-color:#2C2C38}
+.frame.rec{aspect-ratio:var(--rec)}      /* matches the file, so no cropping */
+.frame.own{aspect-ratio:var(--r)}         /* each clip carries its own ratio inline */
+.frame.free{aspect-ratio:auto}            /* lets an image set its own height */
+.frame video,.frame img{width:100%;height:100%;object-fit:contain}
+.frame.free img{height:auto}
+.slot{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;gap:6px;
+  background:repeating-linear-gradient(45deg,rgba(255,255,255,.014) 0 12px,transparent 12px 24px),var(--surf2)}
+.slot b{font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.slot i{font-style:normal;font-size:12px;letter-spacing:.06em;color:var(--dim);line-height:1.8;max-width:46ch}
+.slot u{text-decoration:none;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-lit);border:1px solid rgba(42,64,254,.35);border-radius:100px;padding:5px 11px;margin-top:6px}
+.cap{font-size:12.5px;color:var(--dim);margin-top:14px;letter-spacing:.02em;line-height:1.7}
+.cap b{color:var(--muted);font-weight:500}
+.cover{margin-top:90px;position:relative;z-index:1}
+
+/* ---------- sections ---------- */
+section{padding:120px 0;position:relative;z-index:1}
+.eyebrow{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--blue-lit)}
+h2{font-size:clamp(30px,4.4vw,58px)}
+h2 em{font-style:normal;color:transparent;-webkit-text-stroke:1px var(--blue-lit)}
+h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(19px,2vw,25px);letter-spacing:-.025em}
+p.body{font-size:16px;color:#A9A9B4;line-height:1.75;margin-top:22px}
+p.body b{color:var(--ink);font-weight:500}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+
+/* note strip for honesty about collaboration */
+.note{border-left:1px solid var(--blue-lit);background:var(--surf);border-radius:0 10px 10px 0;padding:22px 26px;margin-top:34px;max-width:680px}
+.note .k{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue-lit);margin-bottom:9px}
+.note p{font-size:14.5px;color:var(--muted);line-height:1.7}
+
+/* method chain */
+.chain{margin-top:44px}
+.chain-step{display:grid;grid-template-columns:120px 1fr;gap:34px;align-items:start;
+  border-top:1px solid var(--line);padding:34px 0}
+.cs-n{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue-lit);padding-top:6px}
+.cs-b h3{margin-bottom:10px}
+.cs-b p{font-size:15.5px;color:var(--muted);line-height:1.75;max-width:64ch}
+
+/* numbered steps */
+.steps{display:flex;flex-direction:column;margin-top:24px}
+.step{border-top:1px solid var(--line);padding:30px 0;display:grid;grid-template-columns:60px 1fr;gap:28px;align-items:start}
+.step:last-child{border-bottom:1px solid var(--line)}
+.step .n{font-family:'Archivo',sans-serif;font-weight:800;font-size:28px;letter-spacing:-.05em;color:var(--line);line-height:1;transition:color .5s}
+.step:hover .n{color:var(--blue-lit)}
+.step p{font-size:15px;color:var(--muted);line-height:1.7;margin-top:9px;max-width:62ch}
+
+/* hero blocks, one per row so ultrawide recordings stay large */
+.hblock{margin-top:70px}
+.hblock:first-of-type{margin-top:34px}
+.hmeta{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap;margin-bottom:22px}
+.hmeta .k{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-lit);margin-bottom:10px}
+.hmeta h3{max-width:22ch}
+.hmeta .r{font-size:14.5px;color:var(--muted);line-height:1.7;max-width:40ch}
+.hlink{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:14px;transition:color .4s,gap .5s cubic-bezier(.2,.8,.2,1)}
+.hlink:hover{color:var(--blue-lit);gap:14px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:44px}
+.stat{background:var(--bg);padding:38px 30px}
+.stat .n{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,3.6vw,46px);letter-spacing:-.04em;line-height:1}
+.stat .n span{color:var(--blue-lit)}
+.stat .t{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:12px;line-height:1.6}
+
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:26px}
+.tag{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#9A9AA4;border:1px solid var(--line);border-radius:100px;padding:6px 12px}
+
+.inline{color:var(--blue-lit);border-bottom:1px solid rgba(42,64,254,.4);padding-bottom:2px}
+
+/* next / footer */
+.next{border-top:1px solid var(--line)}
+.next a{display:block;padding:90px 0;transition:background .5s,padding-left .55s cubic-bezier(.2,.8,.2,1)}
+.next a:hover{background:var(--surf);padding-left:16px}
+.next .k{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.next .t{font-size:clamp(30px,5.6vw,72px)}
+.next a:hover .t em{-webkit-text-stroke-color:var(--ink)}
+.foot{border-top:1px solid var(--line);padding:34px 0;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+
+@media (max-width:980px){
+  .bar-in{padding:14px 32px}
+  .chead{padding:130px 0 0}
+  .meta{grid-template-columns:1fr 1fr}
+  .split{grid-template-columns:1fr;gap:38px}
+  .stats{grid-template-columns:1fr}
+  section{padding:92px 0}
+  .cover{margin-top:60px}
+  .hblock{margin-top:56px}
+}
+@media (max-width:640px){
+  .wrap{padding:0 22px}
+  .bar-in{padding:12px 22px}
+  .brand span{display:none}
+  .chead{padding:110px 0 0}
+  .meta{grid-template-columns:1fr}
+  section{padding:70px 0}
+  .step{grid-template-columns:1fr;gap:10px}
+  .chain-step{grid-template-columns:1fr;gap:12px}
+  .cs-n{padding-top:0}
+  .next a{padding:56px 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1!important;transform:none!important;transition:none!important}
+}
+
+/* ---------- confidentiality ---------- */
+.nda{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);
+  background:var(--surf);border-radius:12px;padding:20px 24px;max-width:720px;margin-top:38px}
+.nda svg{width:16px;height:16px;stroke:var(--blue-lit);fill:none;stroke-width:2;flex:none;margin-top:2px}
+.nda p{font-size:14px;color:var(--muted);line-height:1.7}
+.nda b{color:var(--ink);font-weight:500}
+
+/* ---------- live embed ---------- */
+.live{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+  background:#08080B;aspect-ratio:1440/900}
+.live iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;z-index:2;
+  transform-origin:top left;transform:scale(var(--s,.5))}
+.live-fallback{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px;
+  font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);line-height:2}
+.live-fallback b{color:var(--muted);font-size:12.5px;letter-spacing:.16em}
+.live-fallback code{font-family:ui-monospace,monospace;text-transform:none;letter-spacing:0;color:var(--blue-lit)}
+.live-tag{position:absolute;z-index:3;top:14px;left:14px;display:inline-flex;align-items:center;gap:8px;
+  font-family:'Archivo',sans-serif;font-weight:600;font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink);background:rgba(8,8,11,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid var(--line-2,rgba(255,255,255,.14));border-radius:100px;padding:7px 13px;pointer-events:none}
+.live-tag i{width:5px;height:5px;border-radius:50%;background:var(--blue-lit);
+  box-shadow:0 0 8px var(--blue-glow);animation:lp 2.2s ease-in-out infinite}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.3}}
+
+.open{display:inline-flex;align-items:center;gap:11px;margin-top:22px;
+  font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+  padding:15px 26px;border-radius:100px;background:var(--blue);color:#fff;
+  box-shadow:0 12px 34px -16px var(--blue-glow);
+  transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s}
+.open:hover{transform:translateY(-2px);box-shadow:0 20px 48px -16px var(--blue-glow)}
+.open svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.2;transition:transform .45s}
+.open:hover svg{transform:translate(3px,-3px)}
+.open-note{font-size:12px;color:var(--dim);margin-top:12px;letter-spacing:.02em}
+
+
+/* ---------- build blocks ---------- */
+.blk{border-top:1px solid var(--line);padding:100px 0}
+.blk-head{display:grid;grid-template-columns:110px 1fr;gap:34px;align-items:start;margin-bottom:44px}
+.blk-n{font-family:'Archivo',sans-serif;font-weight:800;font-size:56px;letter-spacing:-.05em;
+  line-height:.9;color:var(--line);transition:color .5s}
+.blk:hover .blk-n{color:var(--blue-lit)}
+.blk-t{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(22px,2.6vw,34px);
+  letter-spacing:-.03em;line-height:1.08;margin-bottom:12px}
+.blk-line{font-size:16px;color:#A9A9B4;line-height:1.7;max-width:60ch}
+.blk .tags{margin-top:20px}
+.blk .note{margin-top:30px;max-width:none}
+@media (max-width:860px){
+  .blk{padding:70px 0}
+  .blk-head{grid-template-columns:1fr;gap:14px;margin-bottom:30px}
+  .blk-n{font-size:38px}
+}
+
+/* ---------- browser frame for the live embed ---------- */
+.chrome{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surf)}
+.chrome-bar{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.dots{display:flex;gap:6px;flex:none}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.url{flex:1;text-align:center;font-size:11px;letter-spacing:.08em;color:var(--dim);
+  background:var(--bg);border-radius:100px;padding:6px 14px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* the embed is only meaningful at desktop width */
+.live-alt{display:none;border:1px solid var(--line);border-radius:14px;background:var(--surf);
+  padding:34px 26px;text-align:center}
+.live-alt b{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:17px;
+  letter-spacing:-.02em;margin-bottom:10px}
+.live-alt p{font-size:14px;color:var(--muted);line-height:1.7;max-width:38ch;margin:0 auto}
+@media (max-width:720px){
+  .chrome{display:none}
+  .live-alt{display:block}
+}
+
+
+/* ---------- embedded live sections ---------- */
+.emb{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+  background:#1B1B22;aspect-ratio:1440/900}
+.emb iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;z-index:2;
+  transform-origin:top left;transform:scale(var(--s,.5));background:#fff}
+.emb.ready{border-color:#2C2C38}
+.emb.failed .emb-ph b{color:var(--blue-lit)}
+.emb-ph{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px}
+.emb-ph svg{width:20px;height:20px;stroke:var(--blue-lit);fill:none;stroke-width:1.6}
+.emb-ph b{font-family:'Archivo',sans-serif;font-weight:700;color:var(--ink);font-size:15px}
+.emb-ph span{font-size:12.5px;color:#9A9AA4;max-width:36ch;line-height:1.7}
+.emb-ph code{font-family:ui-monospace,monospace;color:var(--blue-lit);font-size:12px}
+.emb-tag{position:absolute;z-index:3;top:12px;left:12px;display:inline-flex;align-items:center;gap:8px;
+  font-family:'Archivo',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink);background:rgba(8,8,11,.7);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.12);border-radius:100px;padding:6px 12px;pointer-events:none}
+.emb-tag i{width:5px;height:5px;border-radius:50%;background:var(--blue-lit);
+  box-shadow:0 0 8px var(--blue-glow);animation:lp 2.2s ease-in-out infinite}
+.emb-alt{display:none;border:1px solid var(--line);border-radius:14px;background:var(--surf);
+  padding:28px 24px;text-align:center;font-size:13.5px;color:var(--muted);line-height:1.7}
+@media (max-width:720px){
+  .emb{display:none}
+  .emb-alt{display:block}
+}
+
+/* ---------- pending recording ---------- */
+.frame.slot{
+  display:flex;align-items:center;justify-content:center;
+  background:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.014) 0 12px,transparent 12px 24px),
+    #1B1B22;
+  border:1px dashed #33333F;
+}
+.frame.slot:hover{border-color:var(--blue-lit)}
+.slot-in{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:24px}
+.slot-in svg{width:20px;height:20px;stroke:var(--blue-lit);fill:none;stroke-width:1.6}
+.slot-in b{font-family:'Archivo',sans-serif;font-weight:700;color:var(--ink);
+  font-size:15px;letter-spacing:-.01em;text-transform:none}
+.slot-in span{font-size:12.5px;color:#9A9AA4;line-height:1.8;letter-spacing:.01em;max-width:34ch}
+.slot-in em{display:block;font-style:normal;margin-top:6px;font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--blue-lit)}
+/* captions need to be readable, not decorative */
+.blk .cap{color:#9A9AA4;font-size:14px;line-height:1.75;max-width:74ch;margin-top:18px}
+.blk .cap b{color:var(--ink)}
+@media (max-width:860px){ .nda{padding:18px 20px} }
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<div class="glow"></div>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="index.html" aria-label="Home">
+      <svg viewBox="0 0 685 483" xmlns="http://www.w3.org/2000/svg">
+        <path d="M481.198 127.554C488.277 138.706 494.694 150.259 500.419 162.154C511.828 185.483 520.271 210.133 525.553 235.537C589.259 153.856 684.901 106.84 684.901 106.84V0C684.901 0 570.466 10.2918 481.198 127.554Z" fill="#2A40FE"/>
+        <path d="M499.302 282.913C499.302 282.913 504.394 106.709 272.075 0L269.709 9.44235C266.862 19.9194 263.905 30.1133 260.838 40.024C175.71 315.585 7.85242 362.961 0 365.019V483C0 483 234.291 431.214 327.567 172.022C329.112 167.709 330.853 161.37 332.068 156.861C332.068 156.861 459.054 281.41 381.811 348.16C340.479 383.904 293.102 328.556 283.738 319.669C281.701 322.381 279.664 325.028 277.562 327.674C259.015 351.095 238.553 372.951 216.385 393.019C232.024 408.081 265.668 439.186 285.381 447.615C296.913 452.549 319.583 463.69 351.092 463.592C375.715 463.455 399.878 456.947 421.205 444.708C459.58 422.621 475.843 388.837 483.236 372.828C500.222 336.365 499.795 303.921 499.302 282.913Z" fill="#2A40FE"/>
+      </svg>
+      <span>Enes Sermaxhaj</span>
+    </a>
+    <a class="back" href="index.html#work">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      All work
+    </a>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= HEADER ================= -->
+<div class="chead">
+  <div class="wrap">
+    <div class="crumb rv">Case Study &middot; 02 &middot; Product landing page</div>
+    <h1 class="disp ctitle rv" data-d="1">A landing page<br>built to <em>ship</em></h1>
+    <p class="clede rv" data-d="2">A Chrome extension that reads a profile, verifies the work email
+    and drafts the opener, leaving the send to the user. I did the whole page:
+    <b>positioning, copy, interface, motion and the front-end code</b>. It was handed over as one
+    production HTML file, ready to deploy without a rebuild.</p>
+
+    <div class="meta rv" data-d="3">
+      <div class="mcell">
+        <div class="k">Role</div>
+        <div class="v">Sole designer and builder<small>Concept through shipped code</small></div>
+      </div>
+      <div class="mcell">
+        <div class="k">Scope</div>
+        <div class="v">Ten sections, one page<small>Hero, product, pricing, FAQ</small></div>
+      </div>
+      <div class="mcell">
+        <div class="k">Output</div>
+        <div class="v">Production HTML, CSS, JS<small>No framework, no dependencies</small></div>
+      </div>
+      <div class="mcell">
+        <div class="k">Status</div>
+        <div class="v">Pre-launch<small>Client withheld until release</small></div>
+      </div>
+    </div>
+
+    <div class="nda rv" data-d="4">
+      <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <p><b>Not public yet.</b> The client name and mark are held back until launch, so the
+      preview runs under the product name only. Everything else here is the real build:
+      the layout, the motion and the code are exactly what was delivered.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LIVE HERO ================= -->
+<div class="cover">
+  <div class="wrap">
+    <figure class="figure rv">
+      <div class="chrome">
+        <div class="chrome-bar">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="url">landing page &middot; confidential preview</span>
+        </div>
+        <div class="live emb" id="live" data-src="product-preview.html" data-hero="1">
+          <div class="live-fallback">
+            <b>Preview not loaded</b>
+            Place <code>product-preview.html</code> in the same folder as this file
+          </div>
+          <span class="live-tag"><i></i>Live &middot; interactive</span>
+          <iframe id="frame" title="Landing page hero, interactive preview"
+                  scrolling="no" tabindex="-1"></iframe>
+        </div>
+      </div>
+      <figcaption class="cap"><b>The hero, running.</b> Not a recording. This is the real section
+      embedded from the delivered file, so the canvas, the cursor work and the panel timing behave
+      exactly as they do in the browser. Move across it.</figcaption>
+
+      <a class="open" href="product-preview.html" target="_blank" rel="noopener">
+        Open the full page
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+      </a>
+      <div class="open-note">Opens the delivered HTML in a new tab. Best on desktop.</div>
+    </figure>
+  </div>
+</div>
+
+<!-- ================= THE ARGUMENT ================= -->
+<section>
+  <div class="wrap">
+    <div class="split">
+      <div class="rv">
+        <div class="eyebrow">The problem</div>
+        <h2 class="disp">Selling an <em>approval</em> product</h2>
+      </div>
+      <div class="rv" data-d="1">
+        <p class="body">Most automation tools sell speed, and buyers hear risk. The value here runs the other way: the machine does the reading, verifying and drafting, and the
+        human keeps the last click. That distinction had to be visible in the first screen, not
+        explained in paragraph four.</p>
+        <p class="body">So the hero shows the actual object being approved rather than an abstract
+        illustration. The page then repeats that structure section by section: show the artifact,
+        then state the guardrail.</p>
+      </div>
+    </div>
+    <div class="note rv" data-d="2">
+      <div class="k">Positioning line</div>
+      <p>Autopilot on the work, manual on the judgment. It separates the product from every
+      send-it-for-you tool in one sentence, and it dictated the order of the whole page.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTIONS ================= -->
+<section style="padding-bottom:0">
+  <div class="wrap">
+    <div class="eyebrow rv">The build</div>
+    <h2 class="disp rv" data-d="1">Section by <em>section</em></h2>
+    <p class="body narrow rv" data-d="2">Every section below is the delivered build, embedded live
+    rather than screenshotted. They load as you reach them and each one is interactive, so what
+    you are judging is the real thing at the real width.</p>
+  </div>
+</section>
+
+<!-- ================= BUILD BLOCKS ================= -->
+<section class="blk">
+  <div class="wrap">
+    <div class="blk-head rv">
+      <div class="blk-n">01</div>
+      <div>
+        <h3 class="blk-t">Capture</h3>
+        <p class="blk-line">The panel fills in front of you: company, work email, intent and a readiness score.</p>
+        <div class="tags"><span class="tag">Product UI</span><span class="tag">Micro-interaction</span></div>
+      </div>
+    </div>
+    <figure class="figure rv" data-d="1">
+      <div class="emb" data-src="product-preview.html#capture" data-anchor="capture">
+        <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Capture</b><span>Loading the live section&hellip;</span></div>
+        <span class="emb-tag"><i></i>Live section</span>
+        <iframe title="Capture section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+      </div>
+      <div class="emb-alt">The live <b>Capture</b> section runs at desktop width. Open the full page to see it.</div>
+      <figcaption class="cap"><b>Capture.</b> The fields resolve one after another rather than all at once, because this is the moment the product asks to be trusted with research. Something that appears instantly reads as a mockup, while something that arrives in sequence reads as work being done on your behalf.</figcaption>
+    </figure>
+    <div class="note rv" data-d="2">
+      <div class="k">Decision</div>
+      <p>Empty states are labelled <b>not found</b> instead of quietly disappearing. Showing where the search came up short is what makes the fields that did fill believable, and it costs nothing but honesty.</p>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="wrap">
+    <div class="blk-head rv">
+      <div class="blk-n">02</div>
+      <div>
+        <h3 class="blk-t">Approve</h3>
+        <p class="blk-line">The readiness score and claim check sit on the draft itself, where the risk actually is.</p>
+        <div class="tags"><span class="tag">Core section</span><span class="tag">Trust</span></div>
+      </div>
+    </div>
+    <figure class="figure rv" data-d="1">
+      <div class="emb" data-src="product-preview.html#approve" data-anchor="approve">
+        <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Approve</b><span>Loading the live section&hellip;</span></div>
+        <span class="emb-tag"><i></i>Live section</span>
+        <iframe title="Approve section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+      </div>
+      <div class="emb-alt">The live <b>Approve</b> section runs at desktop width. Open the full page to see it.</div>
+      <figcaption class="cap"><b>Approve.</b> This is the section the whole argument rests on, so it holds the most vertical space and the slowest motion on the page. Everything above it exists to bring the reader here in the right frame of mind.</figcaption>
+    </figure>
+    <div class="note rv" data-d="2">
+      <div class="k">Decision</div>
+      <p>The score and the claim check are attached to the message rather than shown in a separate dashboard, because a decision has to happen at the point of risk. Move it elsewhere and the guardrail becomes decoration.</p>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="wrap">
+    <div class="blk-head rv">
+      <div class="blk-n">03</div>
+      <div>
+        <h3 class="blk-t">How it works</h3>
+        <p class="blk-line">Read, verify, draft. The send stays with the person, deliberately.</p>
+        <div class="tags"><span class="tag">Explainer</span><span class="tag">Hierarchy</span></div>
+      </div>
+    </div>
+    <figure class="figure rv" data-d="1">
+      <div class="emb" data-src="product-preview.html#how" data-anchor="how">
+        <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>How it works</b><span>Loading the live section&hellip;</span></div>
+        <span class="emb-tag"><i></i>Live section</span>
+        <iframe title="How it works section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+      </div>
+      <div class="emb-alt">The live <b>How it works</b> section runs at desktop width. Open the full page to see it.</div>
+      <figcaption class="cap"><b>Three steps.</b> Three is about the ceiling for a landing page. A fourth turns a diagram into documentation, and the reader starts skimming, which costs more attention than the extra detail could ever return.</figcaption>
+    </figure>
+    <div class="note rv" data-d="2">
+      <div class="k">Decision</div>
+      <p>The held-back send is drawn as a deliberate stop rather than left out. Here the absence of a step is the feature, so it needed to be visible instead of implied.</p>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="wrap">
+    <div class="blk-head rv">
+      <div class="blk-n">04</div>
+      <div>
+        <h3 class="blk-t">The package</h3>
+        <p class="blk-line">Dossier, message and cadence arrive together as one reviewable object.</p>
+        <div class="tags"><span class="tag">Product proof</span><span class="tag">Pricing support</span></div>
+      </div>
+    </div>
+    <figure class="figure rv" data-d="1">
+      <div class="emb" data-src="product-preview.html#package" data-anchor="package">
+        <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>The package</b><span>Loading the live section&hellip;</span></div>
+        <span class="emb-tag"><i></i>Live section</span>
+        <iframe title="The package section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+      </div>
+      <div class="emb-alt">The live <b>The package</b> section runs at desktop width. Open the full page to see it.</div>
+      <figcaption class="cap"><b>One object.</b> Anyone weighing a per-capture price needs to know what a capture actually contains, so the three outputs are shown as a single artifact rather than as separate features.</figcaption>
+    </figure>
+    <div class="note rv" data-d="2">
+      <div class="k">Decision</div>
+      <p>Answering that question here lets the pricing section further down stay short. It is billed as one thing and reviewed as one thing, so it is shown as one thing.</p>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="wrap">
+    <div class="blk-head rv">
+      <div class="blk-n">05</div>
+      <div>
+        <h3 class="blk-t">Features</h3>
+        <p class="blk-line">Guardrails and budget caps, written as capabilities rather than fine print.</p>
+        <div class="tags"><span class="tag">Grid</span><span class="tag">Positioning</span></div>
+      </div>
+    </div>
+    <figure class="figure rv" data-d="1">
+      <div class="emb" data-src="product-preview.html#features" data-anchor="features">
+        <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Features</b><span>Loading the live section&hellip;</span></div>
+        <span class="emb-tag"><i></i>Live section</span>
+        <iframe title="Features section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+      </div>
+      <div class="emb-alt">The live <b>Features</b> section runs at desktop width. Open the full page to see it.</div>
+      <figcaption class="cap"><b>Guardrails as features.</b> Limits usually get buried in terms of service. For an agency running a dozen client workspaces, separated approved claims and a hard budget cap are the reasons to buy, so they lead instead.</figcaption>
+    </figure>
+    <div class="note rv" data-d="2">
+      <div class="k">Decision</div>
+      <p>Each card names the constraint before the capability. It is the same argument the hero makes, repeated at feature scale so the page stays consistent with itself.</p>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="wrap">
+    <div class="blk-head rv">
+      <div class="blk-n">06</div>
+      <div>
+        <h3 class="blk-t">Pricing and FAQ</h3>
+        <p class="blk-line">Free on the first campaign, with the objections handled directly underneath.</p>
+        <div class="tags"><span class="tag">Conversion</span><span class="tag">Close</span></div>
+      </div>
+    </div>
+    <figure class="figure rv" data-d="1">
+      <div class="emb" data-src="product-preview.html#pricing" data-anchor="pricing">
+        <div class="emb-ph"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><b>Pricing and FAQ</b><span>Loading the live section&hellip;</span></div>
+        <span class="emb-tag"><i></i>Live section</span>
+        <iframe title="Pricing and FAQ section, live from the delivered build" scrolling="no" tabindex="-1"></iframe>
+      </div>
+      <div class="emb-alt">The live <b>Pricing and FAQ</b> section runs at desktop width. Open the full page to see it.</div>
+      <figcaption class="cap"><b>The close.</b> Starting free removes the cost of deciding. For a tool asking for browser access, lowering the threshold to try it matters considerably more than the shape of the tiers above it.</figcaption>
+    </figure>
+    <div class="note rv" data-d="2">
+      <div class="k">Decision</div>
+      <p>The FAQ sits immediately below pricing rather than at the bottom of the page, so the questions that stall a click get answered while the price is still on screen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HANDOFF ================= -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow rv">Handover</div>
+    <h2 class="disp rv" data-d="1">Delivered <em>deployable</em></h2>
+    <p class="body narrow rv" data-d="2">One HTML file. No framework, no build step, no dependency
+    to install. Semantic sections with stable ids, scoped class names, and all motion behind
+    <code>prefers-reduced-motion</code>. Every animation is canvas or CSS, driven by an
+    IntersectionObserver so nothing off screen is running.</p>
+    <p class="body narrow rv" data-d="3">The practical effect is that there is no handoff gap.
+    No redline pass, no second round on spacing, no developer rebuilding a static frame. What was
+    designed is what deploys.</p>
+    <div class="stats rv" data-d="4">
+      <div class="stat"><div class="n">10</div><div class="r">Sections, one file</div></div>
+      <div class="stat"><div class="n">0</div><div class="r">Dependencies</div></div>
+      <div class="stat"><div class="n">1</div><div class="r">Person, design to code</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NEXT ================= -->
+<div class="next">
+  <div class="wrap">
+    <a href="agilyti.html">
+      <div class="k">Next</div>
+      <div class="disp t">Next <em>project</em></div>
+    </a>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;width:100%">
+    <span>&copy; 2026 Enes Sermaxhaj</span>
+    <span>Pristina · Kosovo</span>
+  </div>
+</footer>
+
+</main>
+<script>
+const prog=document.getElementById('prog');
+addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-innerHeight;
+  prog.style.width=(h>0?(scrollY/h)*100:0)+'%';
+},{passive:true});
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
+}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* only play what is on screen, so four loops stay light */
+const vio=new IntersectionObserver(es=>es.forEach(e=>{
+  const v=e.target;
+  if(e.isIntersecting){v.play().catch(()=>{})}else{v.pause()}
+}),{threshold:.3});
+document.querySelectorAll('video').forEach(v=>vio.observe(v));
+</script>
+<script>
+/* ---- live embeds ----------------------------------------------------------
+   Each embed is a full copy of the delivered page, so only the ones near the
+   viewport stay alive. The rest are torn down to keep memory flat.
+--------------------------------------------------------------------------- */
+(function(){
+  const VW = 1440;
+  const KEEP = 2;               // how many section embeds may live at once
+
+  const fit = box => {
+    const w = box.clientWidth;
+    if (w) box.style.setProperty('--s', (w / VW).toFixed(5));
+  };
+
+  const park = (box, frame) => {
+    const id = box.dataset.anchor;
+    if (!id) return;
+    try {
+      const doc = frame.contentDocument;
+      const el = doc && doc.getElementById(id);
+      if (el) frame.contentWindow.scrollTo(0, el.getBoundingClientRect().top + frame.contentWindow.scrollY);
+    } catch (e) {}
+  };
+
+  const fail = box => {
+    box.classList.add('failed');
+    const t = box.querySelector('.emb-ph span');
+    if (t) t.innerHTML = 'Could not load <code>product-preview.html</code>. It has to sit in the same folder as this page.';
+  };
+
+  const embeds = [...document.querySelectorAll('.emb[data-src]:not([data-hero])')];
+  const boxes  = [...document.querySelectorAll('.emb, .live')];
+
+  boxes.forEach(fit);
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(es => es.forEach(e => fit(e.target)));
+    boxes.forEach(b => ro.observe(b));
+  }
+  addEventListener('resize', () => boxes.forEach(fit), { passive: true });
+
+  const live = [];              // currently loaded, in the order they were loaded
+
+  const unload = box => {
+    const frame = box.querySelector('iframe');
+    if (!frame || !frame.src) return;
+    frame.removeAttribute('src');
+    frame.contentWindow && frame.contentWindow.location.replace('about:blank');
+    box.classList.remove('ready');
+    const t = box.querySelector('.emb-ph span');
+    if (t) t.textContent = 'Scroll back to load the live section';
+  };
+
+  const load = box => {
+    const frame = box.querySelector('iframe');
+    if (!frame || frame.src || box.classList.contains('ready')) return;
+
+    if (!box.dataset.hero) {                       // the hero stays, sections rotate
+      while (live.length >= KEEP) unload(live.shift());
+      live.push(box);
+    }
+
+    let done = false;
+    frame.addEventListener('load', () => {
+      done = true;
+      box.classList.add('ready');
+      fit(box);
+      park(box, frame);
+    }, { once: true });
+    frame.addEventListener('error', () => fail(box), { once: true });
+    setTimeout(() => { if (!done) fail(box); }, 8000);
+
+    frame.src = box.dataset.src;
+  };
+
+  /* load what is close, drop what is far */
+  if ('IntersectionObserver' in window) {
+    const near = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) load(e.target);
+    }), { rootMargin: '250px 0px' });
+    embeds.forEach(b => near.observe(b));
+  } else {
+    embeds.slice(0, KEEP).forEach(load);
+  }
+
+  const heroBox = document.getElementById('live');
+  if (heroBox) load(heroBox);                      // it is the first thing anyone sees
+})();
+</script>
+</body>
+</html>
